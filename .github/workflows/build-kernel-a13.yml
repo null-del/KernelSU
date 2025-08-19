@@ -3,8 +3,6 @@ on:
   push:
     branches: ["main", "ci", "checkci"]
     paths:
-      - ".github/workflows/build-kernel-a13.yml"
-      - ".github/workflows/gki-kernel.yml"
       - ".github/scripts/build_a13.sh"
       - "kernel/**"
   pull_request:

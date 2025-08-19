@@ -81,7 +81,7 @@ jobs:
           remove-android: 'true'
           remove-haskell: 'true'
           remove-codeql: 'true'
-
+          
       - uses: actions/checkout@v4
         with:
           path: KernelSU
@@ -98,6 +98,14 @@ jobs:
 
       - name: Setup kernel source
         run: |
+          free -h
+          echo "Free space:"
+          df -h
+          sudo fallocate -l 32G /home/runner/work/KernelSU/KernelSU/swapfile
+          sudo chmod 600 /home/runner/work/KernelSU/KernelSU/swapfile
+          sudo mkswap /home/runner/work/KernelSU/KernelSU/swapfile
+          sudo swapon /home/runner/work/KernelSU/KernelSU/swapfile
+          free -h
           echo "Free space:"
           df -h
           cd $GITHUB_WORKSPACE
@@ -198,6 +206,11 @@ jobs:
       - name: Make working directory clean to avoid dirty
         working-directory: android-kernel
         run: |
+          # Fix bazel build error
+          if [ -f common/BUILD.bazel ]; then
+            [ -f android/abi_gki_protected_exports_aarch64 ] || sed -i '/^[[:space:]]*"protected_exports_list"[[:space:]]*:[[:space:]]*"android\/abi_gki_protected_exports_aarch64",$/d' common/BUILD.bazel
+          fi
+          
           rm common/android/abi_gki_protected_exports_* || echo "No protected exports!"
           git config --global user.email "bot@kernelsu.org"
           git config --global user.name "KernelSUBot"
@@ -214,7 +227,7 @@ jobs:
           if [ -e build/build.sh ]; then
             LTO=thin BUILD_CONFIG=common/build.config.gki.aarch64 build/build.sh CC="/usr/bin/ccache clang"
           else
-            tools/bazel run --disk_cache=/home/runner/.cache/bazel --config=fast --config=stamp --lto=thin //common:kernel_aarch64_dist -- --dist_dir=dist
+            tools/bazel run --disk_cache=/home/runner/.cache/bazel --config=fast --config=stamp --lto=full //common:kernel_aarch64_dist -- --dist_dir=dist
           fi
 
       - name: Prepare artifacts

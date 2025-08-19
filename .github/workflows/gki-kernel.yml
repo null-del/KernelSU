@@ -98,7 +98,7 @@ jobs:
 
       - name: Setup kernel source
         run: |
-          sudo fallocate -l 4G /mnt/swapfile
+          sudo fallocate -l 30G /mnt/swapfile
           sudo chmod 600 /mnt/swapfile
           sudo mkswap /mnt/swapfile
           sudo swapon /mnt/swapfile

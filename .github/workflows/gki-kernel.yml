@@ -101,10 +101,10 @@ jobs:
           free -h
           echo "Free space:"
           df -h
-          sudo fallocate -l 10G /mnt/swapfile
-          sudo chmod 600 /mnt/swapfile
-          sudo mkswap /mnt/swapfile
-          sudo swapon /mnt/swapfile
+          sudo fallocate -l 24G /home/runner/work/KernelSU/KernelSU/swapfile
+          sudo chmod 600 /home/runner/work/KernelSU/KernelSU/swapfile
+          sudo mkswap /home/runner/work/KernelSU/KernelSU/swapfile
+          sudo swapon /home/runner/work/KernelSU/KernelSU/swapfile
           cd $GITHUB_WORKSPACE
           sudo apt-get install repo -y
           mkdir android-kernel && cd android-kernel
